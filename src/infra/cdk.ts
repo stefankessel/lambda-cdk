@@ -9,5 +9,5 @@ const lambdaStack = new LambdaStack(app, 'LambdaStack', {
   table: dataStack.finderTable,
 })
 new ApiGatewayStack(app, 'ApiGatewayStack', {
-  lambdaIntegration: lambdaStack.helloLambdaIntegation,
+  lambdaIntegration: lambdaStack.finderLambdaIntegation,
 })

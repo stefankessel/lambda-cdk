@@ -13,5 +13,6 @@ export class ApiGatewayStack extends Stack {
     const api = new RestApi(this, 'FinderApi')
     const apiResource = api.root.addResource('finder')
     apiResource.addMethod('GET', props.lambdaIntegration)
+    apiResource.addMethod('POST', props.lambdaIntegration)
   }
 }

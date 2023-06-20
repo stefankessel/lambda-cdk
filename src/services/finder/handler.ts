@@ -1,13 +1,17 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import {
   APIGatewayProxyEvent,
   APIGatewayProxyResult,
   Context,
 } from 'aws-lambda'
+import { postHandler } from './postHandler'
 
 enum HttpMethods {
   GET = 'GET',
   POST = 'POST',
 }
+
+const ddbClient = new DynamoDBClient({})
 
 export const handler = async (
   event: APIGatewayProxyEvent,
@@ -15,25 +19,24 @@ export const handler = async (
 ): Promise<APIGatewayProxyResult> => {
   const method = event.httpMethod
   let message: string = ''
-
-  switch (method) {
-    case HttpMethods.GET: {
-      message = 'hello GET'
-      break
+  let response: APIGatewayProxyResult
+  try {
+    switch (method) {
+      case HttpMethods.GET: {
+        return postHandler(event, ddbClient)
+      }
+      case HttpMethods.POST: {
+        return postHandler(event, ddbClient)
+      }
+      default: {
+        return postHandler(event, ddbClient)
+      }
     }
-    case HttpMethods.POST: {
-      message = 'hello from POST'
-      break
+  } catch (error: any) {
+    response = {
+      statusCode: 500,
+      body: JSON.stringify(error.message),
     }
-    default: {
-      break
-    }
+    return response
   }
-
-  const response: APIGatewayProxyResult = {
-    statusCode: 200,
-    body: JSON.stringify(message),
-  }
-
-  return response
 }

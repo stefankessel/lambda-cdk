@@ -5,6 +5,7 @@ import { join } from 'path'
 import { LambdaIntegration } from 'aws-cdk-lib/aws-apigateway'
 import { ITable } from 'aws-cdk-lib/aws-dynamodb'
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
+import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam'
 
 interface LambdaStackProbs extends StackProps {
   table: ITable
@@ -25,13 +26,13 @@ export class LambdaStack extends Stack {
       },
     })
 
-    // helloLambda.addToRolePolicy(
-    //   new PolicyStatement({
-    //     effect: Effect.ALLOW,
-    //     resources: ['*'],
-    //     actions: ['s3:ListAllMyBuckets'],
-    //   })
-    // )
+    finderLambda.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        resources: [props.table.tableArn],
+        actions: ['dynamodb:PutItem'],
+      })
+    )
 
     this.finderLambdaIntegation = new LambdaIntegration(finderLambda)
   }

@@ -5,6 +5,7 @@ import {
   Context,
 } from 'aws-lambda'
 import { postHandler } from './postHandler'
+import { getHandler } from './getHandler'
 
 enum HttpMethods {
   GET = 'GET',
@@ -18,12 +19,11 @@ export const handler = async (
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   const method = event.httpMethod
-  let message: string = ''
-  let response: APIGatewayProxyResult
+
   try {
     switch (method) {
       case HttpMethods.GET: {
-        return postHandler(event, ddbClient)
+        return getHandler(event, ddbClient)
       }
       case HttpMethods.POST: {
         return postHandler(event, ddbClient)
@@ -33,7 +33,7 @@ export const handler = async (
       }
     }
   } catch (error: any) {
-    response = {
+    let response: APIGatewayProxyResult = {
       statusCode: 500,
       body: JSON.stringify(error.message),
     }

@@ -6,8 +6,6 @@ export const postHandler = async (
   event: APIGatewayProxyEvent,
   client: DynamoDBClient
 ): Promise<APIGatewayProxyResult> => {
-  let response: APIGatewayProxyResult
-
   const item = JSON.parse(event.body!)
   const primaryId = uuid()
 

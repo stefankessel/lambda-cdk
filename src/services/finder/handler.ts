@@ -8,6 +8,7 @@ import { postHandler } from './postHandler'
 import { getHandler } from './getHandler'
 import { updateHandler } from './updateHandler'
 import { deleteHandler } from './deleteHandler'
+import { MissingInputError } from '../../utils/validateApiBodyInput'
 
 enum HttpMethods {
   GET = 'GET',
@@ -23,33 +24,44 @@ export const handler = async (
   context: Context
 ): Promise<APIGatewayProxyResult> => {
   const method = event.httpMethod
-
+  let response: APIGatewayProxyResult
   try {
     switch (method) {
       case HttpMethods.GET: {
-        return getHandler(event, ddbClient)
+        response = await getHandler(event, ddbClient)
+        break
       }
       case HttpMethods.POST: {
-        return postHandler(event, ddbClient)
+        response = await postHandler(event, ddbClient)
+        break
       }
       case HttpMethods.PUT: {
-        return updateHandler(event, ddbClient)
+        response = await updateHandler(event, ddbClient)
+        break
       }
       case HttpMethods.DELETE: {
-        return deleteHandler(event, ddbClient)
+        response = await deleteHandler(event, ddbClient)
+        break
       }
       default: {
-        return {
+        response = {
           statusCode: 500,
           body: JSON.stringify('something went wrong'),
         }
       }
     }
-  } catch (error: any) {
-    let response: APIGatewayProxyResult = {
-      statusCode: 500,
-      body: JSON.stringify(error.message),
-    }
+
     return response
+  } catch (error: any) {
+    if (error instanceof MissingInputError) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify(error.message),
+      }
+    }
+    return {
+      statusCode: 500,
+      body: JSON.stringify(error.message + ' error message'),
+    }
   }
 }

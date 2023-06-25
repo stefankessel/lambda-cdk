@@ -7,11 +7,13 @@ import {
 import { postHandler } from './postHandler'
 import { getHandler } from './getHandler'
 import { updateHandler } from './updateHandler'
+import { deleteHandler } from './deleteHandler'
 
 enum HttpMethods {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
+  DELETE = 'DELETE',
 }
 
 const ddbClient = new DynamoDBClient({})
@@ -33,8 +35,14 @@ export const handler = async (
       case HttpMethods.PUT: {
         return updateHandler(event, ddbClient)
       }
+      case HttpMethods.DELETE: {
+        return deleteHandler(event, ddbClient)
+      }
       default: {
-        return postHandler(event, ddbClient)
+        return {
+          statusCode: 500,
+          body: JSON.stringify('something went wrong'),
+        }
       }
     }
   } catch (error: any) {

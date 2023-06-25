@@ -15,5 +15,6 @@ export class ApiGatewayStack extends Stack {
     apiResource.addMethod('GET', props.lambdaIntegration)
     apiResource.addMethod('POST', props.lambdaIntegration)
     apiResource.addMethod('PUT', props.lambdaIntegration)
+    apiResource.addMethod('DELETE', props.lambdaIntegration)
   }
 }

@@ -28,7 +28,7 @@ export const updateHandler = async (
 
     return {
       statusCode: 204,
-      body: JSON.stringify(res),
+      body: JSON.stringify(`updated item with id ${queryId}`),
     }
   } else {
     return {

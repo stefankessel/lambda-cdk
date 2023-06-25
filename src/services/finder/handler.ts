@@ -6,10 +6,12 @@ import {
 } from 'aws-lambda'
 import { postHandler } from './postHandler'
 import { getHandler } from './getHandler'
+import { updateHandler } from './updateHandler'
 
 enum HttpMethods {
   GET = 'GET',
   POST = 'POST',
+  PUT = 'PUT',
 }
 
 const ddbClient = new DynamoDBClient({})
@@ -27,6 +29,9 @@ export const handler = async (
       }
       case HttpMethods.POST: {
         return postHandler(event, ddbClient)
+      }
+      case HttpMethods.PUT: {
+        return updateHandler(event, ddbClient)
       }
       default: {
         return postHandler(event, ddbClient)

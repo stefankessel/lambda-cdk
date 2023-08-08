@@ -9,7 +9,8 @@ const dataStack = new DataStack(app, 'DataStack')
 const lambdaStack = new LambdaStack(app, 'LambdaStack', {
   table: dataStack.finderTable,
 })
+const authStack = new AuthStack(app, 'AuthStack')
 new ApiGatewayStack(app, 'ApiGatewayStack', {
   lambdaIntegration: lambdaStack.finderLambdaIntegation,
+  userPool: authStack.userPool,
 })
-new AuthStack(app, 'AuthStack')
